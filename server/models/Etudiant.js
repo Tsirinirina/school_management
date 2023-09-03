@@ -16,9 +16,9 @@ const etudiantSchema = mongoose.Schema(
     },
     date_inscrit: Date,
   },
-  { timestamps }
+  { timestamps: true }
 );
 
 const etudiant = mongoose.model("Etudiant", etudiantSchema);
 
-module.exports = etudiant
+module.exports = etudiant;

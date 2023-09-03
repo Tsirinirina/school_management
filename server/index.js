@@ -10,8 +10,11 @@ app.use(express.json());
 app.use(cors());
 
 const indexC = require("./controllers/indexController");
-
+const etudiantC = require("./controllers/etudiantController");
+const enseignant = require("./controllers/enseignantController");
 app.use(indexC);
+app.use("/api/etudiant", etudiantC);
+app.use("/api/enseignant", enseignant);
 
 const dbUrl = `${process.env.MONGODB_URI}${process.env.BD_NAME}`;
 
