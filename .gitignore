@@ -1,2 +1,5 @@
 server/node_modules/
 client/node_modules/
+mobile/build/
+mobile/.dart_tool
+mobile/.idea

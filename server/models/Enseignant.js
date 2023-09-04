@@ -6,7 +6,17 @@ const enseignantSchema = mongoose.Schema(
     prenom: { type: String, required: [true, "Le prénom doit pas être vide"] },
     contact_info: {
       telephone: [String],
-      email: { type: String, unique: true },
+      email: {
+        type: String,
+        unique: true,
+        required: [true, "L'email ne doit pas être vide"],
+        validate: {
+          validator: function (value) {
+            return /\S+@\S+\.\S+/.test(value);
+          },
+          message: "L'email doit être au format valide.",
+        },
+      },
     },
     adresse: String,
     date_embauche: {
