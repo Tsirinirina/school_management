@@ -2,8 +2,12 @@ const mongoose = require("mongoose");
 
 const classeSchema = mongoose.Schema(
   {
-    nom: { type: String, required: true },
-    responsable: { type: mongoose.Schema.ObjectId, ref: "Enseignant" },
+    nom: { type: String, required: [true, "Le classe doit avoir un nom"] },
+    responsable: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Enseignant",
+      required: [true, "Le classe doit avoir un responsable"],
+    },
   },
   { timestamps: true }
 );

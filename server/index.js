@@ -6,15 +6,21 @@ const port = 3000;
 const dotenv = require("dotenv");
 dotenv.config();
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
 const indexC = require("./controllers/indexController");
 const etudiantC = require("./controllers/etudiantController");
-const enseignant = require("./controllers/enseignantController");
+const enseignantC = require("./controllers/enseignantController");
+const classeC = require("./controllers/classeController");
+const loginC = require("./controllers/loginController");
+
 app.use(indexC);
 app.use("/api/etudiant", etudiantC);
-app.use("/api/enseignant", enseignant);
+app.use("/api/enseignant", enseignantC);
+app.use("/api/classe", classeC);
+app.use("/api/login", loginC);
 
 const dbUrl = `${process.env.MONGODB_URI}${process.env.BD_NAME}`;
 

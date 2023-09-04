@@ -1,29 +1,27 @@
 const express = require("express");
 const router = express.Router();
-const Enseignant = require("../models/Enseignant");
+const Classe = require("../models/Classe");
 
 router.get("/", async (req, res) => {
   try {
-    const enseignant = await Enseignant.find();
-    res.status(200).json(enseignant);
+    const classe = await Classe.find().populate("responsable");
+    res.status(200).json(classe);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
 });
 
-
 router.post("/", async (req, res) => {
   try {
-    const email = req.body[0].contact_info.email;
-    const existe = await Enseignant.find({ "contact_info.email": email });
+    const nomClasse = req.body.nom;
+
+    const existe = await Classe.find({ nom: nomClasse });
     if (existe.length > 0) {
-      res
-        .status(201)
-        .json({ data: [], message: "Cette email est deja utilisé" });
+      res.status(500).json({ data: [], message: "Cette existe déjà" });
     } else {
-      const enseignant = await Enseignant.create(req.body);
-      res.status(201).json({ data: enseignant, message: "Enseignant ajouté" });
+      const classe = await Classe.create(req.body);
+      res.status(201).json({ data: classe, message: "Classe ajouté" });
     }
   } catch (error) {
     console.log(error);
@@ -33,11 +31,11 @@ router.post("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const enseignant = await Enseignant.findById(req.params.id);
-    if (!enseignant) {
+    const classe = await Classe.findById(req.params.id);
+    if (!classe) {
       res.status(400).json({ message: "Aucun données trouvé" });
     } else {
-      res.status(200).json(enseignant);
+      res.status(200).json(classe);
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
