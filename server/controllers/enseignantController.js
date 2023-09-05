@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Enseignant = require("../models/Enseignant");
+const bcrypt = require("bcrypt");
 
 router.get("/", async (req, res) => {
   try {
@@ -12,17 +13,36 @@ router.get("/", async (req, res) => {
   }
 });
 
-
 router.post("/", async (req, res) => {
+  const {
+    nom,
+    prenom,
+    contact_info,
+    adresse,
+    date_embauche,
+    username,
+    password,
+  } = req.body;
   try {
-    const email = req.body[0].contact_info.email;
+    const email = contact_info.email;
     const existe = await Enseignant.find({ "contact_info.email": email });
     if (existe.length > 0) {
       res
         .status(201)
         .json({ data: [], message: "Cette email est deja utilisé" });
     } else {
-      const enseignant = await Enseignant.create(req.body);
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      const enseignant = new Enseignant({
+        nom,
+        prenom,
+        contact_info,
+        adresse,
+        date_embauche,
+        username,
+        password: hashedPassword, // Enregistrez le mot de passe haché
+      });
+      await enseignant.save();
       res.status(201).json({ data: enseignant, message: "Enseignant ajouté" });
     }
   } catch (error) {

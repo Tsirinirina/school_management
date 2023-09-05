@@ -1,21 +1,29 @@
 const express = require("express");
 const router = express.Router();
 const Enseignant = require("../models/Enseignant");
+const bcrypt = require("bcrypt");
 
 router.post("/", async (req, res) => {
   const { username, password } = req.body;
   try {
     console.log(req.body);
-    const enseignant = await Enseignant.findOne({ username });
+    const enseignant = await Enseignant.findOne({
+      $or: [
+        { username: username },
+        { "contact_info.email": username },
+      ],
+    });
     if (!enseignant) {
       console.log({
-        message: "Le nom d'utilisateur est incorrect ou n'existe pas",
+        message: "L'email ou le nom d'utilisateur n'existe pas",
       });
       return res.status(401).json({
-        message: "Le nom d'utilisateur est incorrect ou n'existe pas",
+        message: "Le nom d'utilisateur ou email n'existe pas",
       });
     } else {
-      if (enseignant.password !== password) {
+      const passwordMatch = await bcrypt.compare(password, enseignant.password);
+
+      if (!passwordMatch) {
         console.log({ message: "Mot de passe incorrect" });
         return res.status(401).json({ message: "Mot de passe incorrect" });
       }

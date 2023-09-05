@@ -23,9 +23,9 @@ app.use("/api/classe", classeC);
 app.use("/api/login", loginC);
 
 const dbUrl = `${process.env.MONGODB_URI}${process.env.BD_NAME}`;
-
+const dburl2 = `${process.env.MONGODB_CLUSTER8URI}${process.env.BD_NAME}`;
 mongoose
-  .connect(dbUrl)
+  .connect(dburl2)
   .then(() => {
     console.log(`Base de données connecté`);
     app.listen(port, () => {
