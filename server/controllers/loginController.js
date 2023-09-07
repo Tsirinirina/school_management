@@ -8,10 +8,7 @@ router.post("/", async (req, res) => {
   try {
     console.log(req.body);
     const enseignant = await Enseignant.findOne({
-      $or: [
-        { username: username },
-        { "contact_info.email": username },
-      ],
+      $or: [{ username: username }, { "contact_info.email": username }],
     });
     if (!enseignant) {
       console.log({
@@ -19,16 +16,21 @@ router.post("/", async (req, res) => {
       });
       return res.status(401).json({
         message: "Le nom d'utilisateur ou email n'existe pas",
+        enseignantId: null,
       });
     } else {
       const passwordMatch = await bcrypt.compare(password, enseignant.password);
 
       if (!passwordMatch) {
         console.log({ message: "Mot de passe incorrect" });
-        return res.status(401).json({ message: "Mot de passe incorrect" });
+        return res
+          .status(401)
+          .json({ message: "Mot de passe incorrect", enseignantId: null });
       }
       console.log({ message: "Connexion réussie" });
-      return res.status(200).json({ message: "Connexion réussie", enseignant });
+      return res
+        .status(200)
+        .json({ message: "Connexion réussie", enseignantId: enseignant._id });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
